@@ -1,0 +1,24 @@
+.img{
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.userInfo{
+    color: white;
+}
+.items{
+    border-radius: 0px;
+}
+.list{
+    color: #c2b302;
+}
+.badges{
+    cursor: pointer;
+    background-color: crimson;
+}
+.btns{
+    background-color: crimson;
+    border: 0px;
+}
+

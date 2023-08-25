@@ -1,0 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Kalam:wght@700&family=Philosopher:wght@400;700&display=swap");
+.landing{
+    background-color: rgb(0, 0, 0,0.5);
+    background-image: url('../img/Landing-page2.jpg');
+    background-repeat: no-repeat;
+    background-size:cover;   
+    background-position: center; 
+    height: 100%;
+    min-width: 100%;
+    /* position: relative; */
+    /* background-attachment: fixed; */
+    overflow-x: hidden;
+}
+.welcome{
+    position: absolute;
+    background-color: rgb(0, 0, 0,0.5);
+    min-height: 100vh;
+}
+.img{
+    width: 150px;
+    height: 150px;
+    border-radius: 75px;
+}
+.btn1{
+    background-color: crimson;
+    border: 0px;
+}
+.btn1:hover{
+    background-color: crimson;
+}
+.bodyTx{
+    font-size: 21px;
+    font-family: 'Kalam', cursive;
+    text-align: center;
+}
+.headerTx{
+    font-family: 'Philosopher', sans-serif;
+    font-size: 52px;
+    text-align: center;
+
+}

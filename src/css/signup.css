@@ -1,0 +1,67 @@
+@import url("https://fonts.googleapis.com/css2?family=Kalam:wght@700&family=Lugrasimo&family=Philosopher:wght@400;700&display=swap");
+.logo{
+    width: 125px;
+    height: 125px;
+    border-radius: 62.5px;
+}
+.input{
+    border-radius: 0px;
+    background-color: transparent;
+    border-top: 0px;
+    border-left: 0px;
+    border-right: 0px;
+    border-bottom:2px solid white ;
+    color: white;
+    height: 35px;
+}
+.input:focus{
+    background-color: transparent;
+    border-top: 0px;
+    border-left: 0px;
+    border-right: 0px;
+    border-bottom: 2px solid crimson;
+    color: white;
+    box-shadow: none;
+    
+}
+.forms{
+    background-color: #212529;
+    min-height: 100vh;
+}
+.btn{
+    background-color: crimson;
+    border: 0px;
+}
+.btn:hover{
+    background-color: crimson;
+}
+.bck{
+    background-image: url('../img/Landing-page2.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 100vh;
+    background-position: f;
+    position: relative;
+    filter: grayscale(30%);
+    background-color: #c2b302;
+    background-attachment: fixed;
+}
+.massage{
+    position: absolute;
+    color: white;
+}
+h3{
+    color: crimson;
+}
+.text{
+    background-color: transparent;
+    /* padding:5px; */
+    width: 55px;
+    height: 35px;
+    color: white;
+    border-radius: 0px;
+    border-left: 0px;
+    border-top: 0px;
+    border-right: 0px;
+    border-bottom: 2px white solid;
+}

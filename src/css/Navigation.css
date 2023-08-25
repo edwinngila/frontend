@@ -1,0 +1,26 @@
+.links{
+    /* background-color: black; */
+    color: #ffff;
+    height: 100vh;
+    overflow-x: hidden;
+}
+.linksItems>*{
+    color: white;
+    /* border-top: 1px solid white; */
+    border-bottom: 1px solid rgb(77, 75, 75);
+}
+.linksItems>*:hover{
+    background-color: crimson;
+    color: white;
+
+}
+.img{
+    width: 157px;
+    height: 150px;
+}
+.opacity{
+    opacity: 0.3;
+}
+
+
+
