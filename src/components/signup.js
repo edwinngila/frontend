@@ -1,7 +1,7 @@
-import { Button,Container, Form, FormControl, FormGroup, FormLabel, InputGroup} from "react-bootstrap"
+import { Alert, Button,Container, Form, FormControl, FormGroup, FormLabel, InputGroup} from "react-bootstrap"
 import '../css/signup.css'
 import logo from '../img/dc143c.png'
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import axios from 'axios'
 import { Link } from "react-router-dom"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
@@ -28,13 +28,11 @@ const SignUp=()=>{
     const{setMessage,showError,setShowError,setVariant}=useContext(ErrorMessage);
     return(        
     <div>
-        <Container fluid>
+        <Container fluid style={{zIndex:"1"}} className="mt-4">
          {/* <ErrorComps showError={showError} setShowError={setShowError}/> */}
-            <div className="row d-flex align-items-center justify-content-center" style={{zIndex:"2"}}>              
-                <div className="col-1 col-md-4 col-lg-8 col-sm-5 bck d-flex align-items-center">
-                  
-                </div>
-                <div className="col-11 col-md-8 col-lg-4 col-sm-7 p-3 forms">
+            <div className="row d-flex align-items-center justify-content-center" style={{zIndex:"2"}}> 
+                <div className="col-11 col-md-8 col-lg- col-sm-7 p-3 forms">
+                  <div className="row">
                     <Form onSubmit={async(e)=>{
                         e.preventDefault()
                         try{ 
@@ -64,7 +62,7 @@ const SignUp=()=>{
                         catch(error){
                             console.log(error.response.message);
                         }                       
-                    }}>
+                    }} className="col-12 col-md-9 col-sm-12 col-lg-6">
                         <div className="col-12 d-flex align-items-center justify-content-center flex-column">
                            <img src={logo} alt="logo" className="logo"></img>
                            <h3>SignUp</h3>
@@ -94,10 +92,10 @@ const SignUp=()=>{
                               <FormControl className="input" type={eye1? "password":"text"} onChange={
                                 (e)=>{
                                     setPassword(e.target.value);
-                                    const PASSWORD_REGEX=/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?!.*\s).{8,}$/;
+                                    const PASSWORD_REGEX=/^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?!.*\s).{8,}$/;
 
                                     if(!PASSWORD_REGEX.test(Password)){
-                                     setError(<p style={{color:"red"}}>password is weak!</p>)
+                                     setError(<p style={{color:"red"}}>password is weak!</p>);
                                     }
                                     else{
                                      setError(<p style={{color:"green"}}>password is strong!</p>)
@@ -130,9 +128,12 @@ const SignUp=()=>{
                             <Link to="/Login"><span><u>Login instead?</u></span></Link>
                         </FormGroup>                    
                     </Form>
+                    <div className="col-6"></div>
+                 </div>
                 </div>
             </div>
         </Container>
+
       </div>
     )
 }
