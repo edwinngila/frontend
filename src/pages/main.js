@@ -1,8 +1,8 @@
 import'bootstrap/dist/css/bootstrap.min.css'
 import { Container } from 'react-bootstrap';
 import '../css/Main.css'
-import { useState } from 'react';
-import { Color, ToggleMenu } from '../components/context';
+import { useContext, useState } from 'react';
+import { Color, ErrorMessage, ToggleMenu } from '../components/context';
 import Navigation from '../components/Navigation';
 import TopIcons from '../components/TopIcons';
 import Home from './Home';
@@ -13,9 +13,11 @@ import FoodAvailable from './FoodAvailable';
 import Inventory from './Inventory';
 import UserInfo from '../components/UserInfo';
 import { Route, Routes } from 'react-router-dom';
+import Landing from './landing';
 function Main() {
   const[bgColor,setBgColor]=useState(true);
   const[toggleMenu,SetToggleMenu]=useState(false)
+  const{login}=useContext(ErrorMessage);
   return (
     <Container fluid>      
         <ToggleMenu.Provider value={{toggleMenu,SetToggleMenu}}>
@@ -33,13 +35,13 @@ function Main() {
                 </div>
                <div className='row' style={{minHeight:'100vh',backgroundColor:`${bgColor? "#f8f9fa":"#707e8b"}`}}>
                   <Routes>
-                     <Route index path='/Home' element={<Home/>}/>
-                     <Route path='/Daily' element={<Graph/>}/>
-                     <Route path='/users' element={<Users/>}/>
-                     <Route path='/SellsPage' element={<SellsPage/>}/>
-                     <Route path='/FoodAvailable' element={<FoodAvailable/>}/>
-                     <Route path='/Inventory' element={<Inventory/>}/>
-                     <Route path='/UserInfo' element={<UserInfo/>}/>                     
+                     <Route index path='/Home' element={login?<Home/>:<Landing/>}/>
+                     <Route path='/Daily' element={login?<Graph/>:<Landing/>}/>
+                     <Route path='/users' element={login?<Users/>:<Landing/>}/>
+                     <Route path='/SellsPage' element={login?<SellsPage/>:<Landing/>}/>
+                     <Route path='/FoodAvailable' element={login?<FoodAvailable/>:<Landing/>}/>
+                     <Route path='/Inventory' element={login?<Inventory/>:<Landing/>}/>
+                     <Route path='/UserInfo' element={login?<UserInfo/>:<Landing/>}/>                     
                   </Routes>
                </div>
            </div>

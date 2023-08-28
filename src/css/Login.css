@@ -44,3 +44,15 @@ h3{
 .btn1:hover{
     background-color: crimson;
 }
+.text{
+    background-color: transparent;
+    /* padding:5px; */
+    width: 55px;
+    height: 35px;
+    color: white;
+    border-radius: 0px;
+    border-left: 0px;
+    border-top: 0px;
+    border-right: 0px;
+    border-bottom: 2px white solid;
+}

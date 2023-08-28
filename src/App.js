@@ -12,16 +12,19 @@ import SignUp from './components/signup';
 import Login from './components/login';
 import Main from './pages/main';
 import ErrorCompass from './components/ErrorComps';
+import Loading from './components/loder';
 // import { ErrorMessage} from './components/context';
 // import { Route, Switch } from 'react-router-dom/cjs/react-router-dom';
 function App() {
   const[Message,setMessage]=useState("");
   const[variant,setVariant]=useState();
   const[showError,setShowError]=useState(false);
+  const[login,setLogin]=useState(false)
   const variants={
     Message,setMessage,
     variant,setVariant,
-    showError,setShowError
+    showError,setShowError,
+    login,setLogin
   }
   return (
     <>  
@@ -34,6 +37,7 @@ function App() {
          <Route path='/SignUp' element={<SignUp/>}/>
          <Route path='/Login' element={<Login/>}/>
          <Route path='/Main' element={<Main/>}/>
+         <Route path='/Loader' element={<Loading/>}/>
       </Routes>
     </ErrorMessage.Provider>
         {/* <Main/>
