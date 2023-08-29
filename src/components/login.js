@@ -2,10 +2,11 @@ import { Button, Container, Form, FormControl, FormGroup, FormLabel, InputGroup 
 import '../css/Login.css'
 import logo from '../img/dc143c.png'
 import axios from "axios";
+import jwt_decoder from "jwt-decode";
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faEyeSlash, faRoad } from "@fortawesome/free-solid-svg-icons";
 import { ErrorMessage } from "./context";
 import Loading from "./loder";
 const Login=()=>{
@@ -15,7 +16,7 @@ const Login=()=>{
     const{setMessage,showError,setShowError,setVariant,login,setLogin}=useContext(ErrorMessage);
     const[reset,setReset]=useState();
     const[rollId,setRollId]=useState();
-    const[Loader,setLoader]=useState(false);
+    const[Loader,setLoader]=useState(true);
     const[show,setShow]=useState(true);
  // const[token,setToken]=useState()
     const history= useNavigate();
@@ -34,22 +35,17 @@ const Login=()=>{
             console.log(err);
         }
     }
-    // const homePage=()=>{
-    //     if(rollId===3){
-    //         history("/Main")
-    //     }
-    // }
-    useEffect(()=>{
-        if(Loader){
-            const timeOut=setTimeout(()=>{history("/Loader");},2000);
-            return ()=>{
-                clearTimeout(timeOut);
-            }            
-        }
-    },[Loader, history]);
+    const loaderTimer=()=>{
+        
+    }
+    const removeLoader=()=>{
+        history("/Main/Home");
+        clearTimeout(loaderTimer);
+        
+    }
     return(
         <>
-        { show?
+        { Loader?
         <Container fluid className="mt-3">
            <div className="row d-flex justify-content-center align-items-center">
              <div className="col-11 col-md-4 col-sm-7 col-lg-4 form">
@@ -69,16 +65,19 @@ const Login=()=>{
                            const variant = (await Response).data.variant;
                            const forgotPassword =(await Response).data.forgotPassword;
                            const userToken = (await Response).data.token;
-                           const userRollId=(await Response).data.rollId;
                            localStorage.setItem('token',userToken);
-                           setRollId(userRollId);
                            setMessage(message);
                            setVariant(variant);
                            setReset(forgotPassword);
                            setShowError(!showError);
                            if(variant==="success"){
                             setLogin(!login);
-                            setLoader(!Loader);
+                            setTimeout(()=>{setLoader(!Loader);},2000)
+                            loaderTimer();
+                            removeLoader();  
+                            const token = localStorage.getItem('token');
+                            const decoded=jwt_decoder(token);
+                            console.log(decoded.userRollId);                      
                            }
                         }
                         catch(err){
@@ -117,7 +116,8 @@ const Login=()=>{
              </div>
            </div>
         </Container>
-         : <Loading/>}
+         : <Loading/>
+         }
         </>
     )
 }

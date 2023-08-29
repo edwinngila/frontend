@@ -8,13 +8,12 @@ import { useContext } from "react"
 import { Color } from "../components/context"
 import {Link} from 'react-router-dom'
 const Home=()=>{
-    const {bgColor} = useContext(Color)
-    console.log(bgColor);
+    const {bgColor} = useContext(Color);
     return(
-        <Container style={{backgroundColor:`${bgColor? "#f8f9fa":"#707e8b"}`}}>
+        <Container fluid style={{backgroundColor:`${bgColor? "#f8f9fa":"#707e8b"}`}}>
             <div className="row mt-3 d-flex justify-content-center align-items-center">
-                <div className="col-12 col-md-4 col-sm-9 col-lg-4 mt-3">
-                 <Link to="/users" style={{textDecoration:"none"}}>
+                <div className="col-12 col-md-6 col-sm-9 col-lg-5 mt-3">
+                 <Link to="users" style={{textDecoration:"none"}}>
                     <Card className="bg-">
                         <CardImg src={users} alt="users"/>
                         <div className="card-body">
@@ -26,8 +25,8 @@ const Home=()=>{
                     </Card>
                  </Link>
                 </div>
-                <div className="col-12 col-md-4 col-sm-9 col-lg-4 mt-3">
-                <Link to="/Daily" style={{textDecoration:"none"}}>
+                <div className="col-12 col-md-6 col-sm-9 col-lg-5 mt-3">
+                <Link to="Daily" style={{textDecoration:"none"}}>
                     <Card className="bg-">
                         <CardImg src={sells} alt="users"/>
                         <div className="card-body">
@@ -41,8 +40,8 @@ const Home=()=>{
                 </div>
             </div>
             <div className="row mt-3 d-flex justify-content-center align-items-center">
-                <div className="col-12 col-md-4 col-sm-9 col-lg-4 mt-3">
-                <Link  to="/Inventory" style={{textDecoration:"none"}}>
+                <div className="col-12 col-md-4 col-sm-9 col-lg-5 mt-3">
+                <Link  to="Inventory" style={{textDecoration:"none"}}>
                 <Card className="bg-">
                         <CardImg src={stored} alt="users"/>
                         <div className="card-body">
@@ -54,8 +53,8 @@ const Home=()=>{
                     </Card>
                 </Link>
                 </div>
-                <div className="col-12 col-md-4 col-sm-9 col-lg-4 mt-3">
-                <Link to="/FoodAvailable" style={{textDecoration:"none"}}>
+                <div className="col-12 col-md-4 col-sm-9 col-lg-5 mt-3">
+                <Link to="FoodAvailable" style={{textDecoration:"none"}}>
                 <Card className="bg-">
                         <CardImg src={food} alt="users"/>
                         <div className="card-body">

@@ -15,21 +15,16 @@ import DropdownToggle from "react-bootstrap/esm/DropdownToggle"
 import DropdownMenu from "react-bootstrap/esm/DropdownMenu"
 import {Link} from 'react-router-dom'
 import { useContext } from "react"
-import { Color, ToggleMenu} from "./context"
+import { Color, ToggleMenu} from "./context";
 // import Main from "../pages/main"
 
 const TopIcons=()=>{
     const[user]=useState(user1);
     const[notification]=useState(2);
     const{bgColor,setBgColor}=useContext(Color) 
-    const{toggleMenu,SetToggleMenu}=useContext(ToggleMenu)   
+    const{toggleMenu,SetToggleMenu}=useContext(ToggleMenu)      
     const[toggle]=useState(true);
-//    useEffect(()=>{
-//     if(window.innerWidth<=600){
-//         console.log(window.innerWidth)
-//         setDisplay(!display)
-//     }  
-//    },[])   
+    
     return(
         
         <Container fluid className={`${bgColor? "bg-light":"bgColor"}`}>
@@ -75,7 +70,7 @@ const TopIcons=()=>{
                             <NavLink className="item">
                                 <img src={logOut} alt="logOut"></img> Logout
                             </NavLink>
-                            <NavLink className="item" onClick={()=>{setBgColor(!bgColor)}}>
+                            <NavLink className="item" onClick={()=>{setBgColor(!bgColor);}}>
                                 <img src={bgColor? sun:moon} alt="toggle"></img> {bgColor? "light":"dark"}
                             </NavLink>                                                      
                         </DropdownMenu>
