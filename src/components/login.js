@@ -3,7 +3,7 @@ import '../css/Login.css'
 import logo from '../img/dc143c.png'
 import axios from "axios";
 import jwt_decoder from "jwt-decode";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash, faRoad } from "@fortawesome/free-solid-svg-icons";
@@ -13,35 +13,21 @@ const Login=()=>{
     const[Email,setEmail]=useState('');
     const[Password,setPassword]=useState(''); 
     const[eye,setEye]=useState(true);
-    const{setMessage,showError,setShowError,setVariant,login,setLogin}=useContext(ErrorMessage);
+    const{setMessage,showError,setShowError,
+        setVariant,login,setLogin,setUserEmail,
+        handleQuestion,setHandleQuestion,
+        setSecurityQuestion
+    }=useContext(ErrorMessage);
     const[reset,setReset]=useState();
     const[rollId,setRollId]=useState();
     const[Loader,setLoader]=useState(true);
     const[show,setShow]=useState(true);
  // const[token,setToken]=useState()
     const history= useNavigate();
-    const resetPassword= async()=>{
-        try{
-            const response = axios.post("http://localhost:4000/users/forget-password",{
-            Email:Email
-        });
-        const message=(await response).data.message;
-        const variant=(await response).data.variant;
-        setMessage(message);
-        setVariant(variant);
-        setShowError(!showError);
-        }
-        catch(err){
-            console.log(err);
-        }
-    }
-    const loaderTimer=()=>{
-        
-    }
-    const removeLoader=()=>{
-        history("/Main/Home");
-        clearTimeout(loaderTimer);
-        
+    const removeLoader=(id)=>{
+        if(rollId===id){
+            history("/UserDefault");
+        }        
     }
     return(
         <>
@@ -65,19 +51,21 @@ const Login=()=>{
                            const variant = (await Response).data.variant;
                            const forgotPassword =(await Response).data.forgotPassword;
                            const userToken = (await Response).data.token;
-                           localStorage.setItem('token',userToken);
+                           localStorage.setItem('token',JSON.stringify(userToken));
                            setMessage(message);
                            setVariant(variant);
                            setReset(forgotPassword);
                            setShowError(!showError);
                            if(variant==="success"){
-                            setLogin(!login);
-                            setTimeout(()=>{setLoader(!Loader);},2000)
-                            loaderTimer();
-                            removeLoader();  
                             const token = localStorage.getItem('token');
-                            const decoded=jwt_decoder(token);
-                            console.log(decoded.userRollId);                      
+                            const decoded=jwt_decoder(JSON.parse(token));
+                            removeLoader(decoded.userRollId); 
+                            setLoader(!Loader);
+                            setTimeout(() => {
+                                setLoader(!Loader);
+                                setLogin(!login);
+                                history('/Main/home');
+                              }, 4000);
                            }
                         }
                         catch(err){
@@ -103,11 +91,27 @@ const Login=()=>{
                             </InputGroup>
                         </FormGroup>
                         <FormGroup className="col-12 d-flex align-items-center justify-content-center flex-column">
-                            <Link to="#">
-                                <span className="mt-2" style={{display: reset? "block":"none"}}><u onClick={resetPassword}>Forgot password?</u></span>
+                            <Link to="/forgotPassword">
+                                <span className="mt-2" style={{display: reset? "block":"none"}} onClick={
+                                    async()=>
+                                    {
+                                        setUserEmail(Email);
+                                        setHandleQuestion(!handleQuestion);
+                                        try{
+                                            const Response = axios.post("http://localhost:4000/users/GetQuestion",{
+                                                Email:Email
+                                            });
+                                            const question=(await Response).data.secretKey;
+                                            setSecurityQuestion(question);
+                                            console.log(question);
+                                            }
+                                        catch(e){
+                                                console.log(e)
+                                        }
+                                    }
+                                    }><u >Forgot password?</u></span>
                              </Link>
                              <Button className="col-5 mt-4 btn1" type="submit">Login</Button>
-                             
                              <Link to="/SignUp">
                                 <span className="mt-2"><u>SignUp instead?</u></span>
                              </Link>

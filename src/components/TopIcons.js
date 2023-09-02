@@ -14,7 +14,7 @@ import {useState } from "react"
 import DropdownToggle from "react-bootstrap/esm/DropdownToggle"
 import DropdownMenu from "react-bootstrap/esm/DropdownMenu"
 import {Link} from 'react-router-dom'
-import { useContext } from "react"
+import { useContext,useEffect} from "react"
 import { Color, ToggleMenu} from "./context";
 // import Main from "../pages/main"
 
@@ -24,15 +24,14 @@ const TopIcons=()=>{
     const{bgColor,setBgColor}=useContext(Color) 
     const{toggleMenu,SetToggleMenu}=useContext(ToggleMenu)      
     const[toggle]=useState(true);
-    
     return(
         
-        <Container fluid className={`${bgColor? "bg-light":"bgColor"}`}>
+        <Container fluid className={`${bgColor==='true'?"bgColor":"bg-light"}`}>
             <useContext value={toggle}>
             <Nav className=" d-flex justify-content-between align-items-center">
                <div className="search col-7 col-md-6 col-sm-6 col-lg-6 d-flex" style={{display:"none"}}>
                     <Button className="navbar-toggler" onClick={()=>{SetToggleMenu(!toggleMenu)}} type="button"style={{backgroundColor:"transparent"}}>
-                        <img src={bgColor? menu2:menu} alt="menu" className="p-2 "></img> 
+                        <img src={bgColor==='true'? menu:menu2} alt="menu" className="p-2 "></img> 
                     </Button>
                 </div>
                 {/* <div className="collapsex">
@@ -54,7 +53,7 @@ const TopIcons=()=>{
                         </Popover>
                     }                 
                     >
-                        <NavLink className="d-flex"><img src={bgColor? bell:bell2} alt="notification"></img>
+                        <NavLink className="d-flex"><img src={bgColor==='true'? bell2:bell} alt="notification"></img>
                         <span className="red">{notification}</span></NavLink>
                     </OverlayTrigger>
                     <Dropdown className="col-1">
@@ -70,8 +69,8 @@ const TopIcons=()=>{
                             <NavLink className="item">
                                 <img src={logOut} alt="logOut"></img> Logout
                             </NavLink>
-                            <NavLink className="item" onClick={()=>{setBgColor(!bgColor);}}>
-                                <img src={bgColor? sun:moon} alt="toggle"></img> {bgColor? "light":"dark"}
+                            <NavLink className="item" onClick={()=>{if(bgColor==='true'){setBgColor("false")}else{setBgColor("true")}}}>
+                                <img src={bgColor==='true'? sun:moon} alt="toggle"></img> {bgColor==='true'? "light":"dark"}
                             </NavLink>                                                      
                         </DropdownMenu>
                     </Dropdown>

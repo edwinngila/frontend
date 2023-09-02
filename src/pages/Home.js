@@ -10,7 +10,7 @@ import {Link} from 'react-router-dom'
 const Home=()=>{
     const {bgColor} = useContext(Color);
     return(
-        <Container fluid style={{backgroundColor:`${bgColor? "#f8f9fa":"#707e8b"}`}}>
+        <Container fluid style={{backgroundColor:`${bgColor==='true'? "#707e8b":"#f8f9fa"}`}}>
             <div className="row mt-3 d-flex justify-content-center align-items-center">
                 <div className="col-12 col-md-6 col-sm-9 col-lg-5 mt-3">
                  <Link to="users" style={{textDecoration:"none"}}>

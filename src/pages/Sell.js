@@ -23,7 +23,7 @@ const SellsPage=()=>{
            <div className="row d-flex justify-content-center alight-items-center">
                 <div className="col-12 col-lg-6 col-md-6 col-sm-12">
                     <div className="row d-flex justify-content-center alight-items-center">
-                        <img src={bgColor? logo:logo2} alt="logo" style={{width:"30%",height:"30%"}}></img>
+                        <img src={bgColor==='true'? logo2:logo} alt="logo" style={{width:"30%",height:"30%"}}></img>
                     </div>
                         <Table responsive='sm' table-dark bordered style={{backgroundColor:"#707e8b"}}>
                             <thead className="table-dark">

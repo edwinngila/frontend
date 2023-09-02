@@ -1,15 +1,23 @@
 import'bootstrap/dist/css/bootstrap.min.css'
 import { Container} from 'react-bootstrap';
 import '../css/Main.css';
-import { useContext, useState } from 'react';
-import { Color, ErrorMessage, ToggleMenu } from '../components/context';
+import {useEffect, useState } from 'react';
+import { Color, ToggleMenu } from '../components/context';
 import Navigation from '../components/Navigation';
 import TopIcons from '../components/TopIcons';
 import {Outlet} from 'react-router-dom';
 function Main() {
-  const[bgColor,setBgColor]=useState(true);
+  const[bgColor,setBgColor]=useState('');
   const[toggleMenu,SetToggleMenu]=useState(false);
-  saveToLocalStor
+  useEffect(()=>{
+    const data = localStorage.getItem("my_theme")
+    if(data!==null){ 
+     setBgColor(data);
+   }
+   },[])
+   useEffect(()=>{
+     localStorage.setItem("my_theme",bgColor)
+   },[bgColor])    
   return (
     <Container fluid>      
         <ToggleMenu.Provider value={{toggleMenu,SetToggleMenu}}>
@@ -25,7 +33,7 @@ function Main() {
                      <TopIcons/>
                   </ToggleMenu.Provider>                  
                 </div>
-               <div className='row' style={{minHeight:'100vh',backgroundColor:`${bgColor? "#f8f9fa":"#707e8b"}`}}>
+               <div className='row' style={{minHeight:'100vh',backgroundColor:`${bgColor==='true'?"#707e8b":"#f8f9fa"}`}}>
                   <Outlet/>
                </div>
            </div>
