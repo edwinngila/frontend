@@ -23,15 +23,6 @@ const Login=()=>{
 
     const[reset,setReset]=useState();
     const[Loader,setLoader]=useState(true);
-    
-   const LevelOfAccess=()=>{
-        const userItem=localStorage.getItem('item');
-        const userInfo=JSON.parse(userItem);
-        const getToken=userInfo.AccessToken;
-        const DecodedToken=jwtDecode(getToken)
-        console.log(DecodedToken.userRole)
-        return DecodedToken.userRole;
-   }
     return(
         <>
         { Loader?
@@ -64,8 +55,19 @@ const Login=()=>{
                             setTimeout(() => {
                                 setLoader(!Loader);
                                 setLogin(!login);
-                                if(LevelOfAccess==="Administrator"||LevelOfAccess==="worker"){                                    
+                                const userItem=localStorage.getItem('item');
+                                const userInfo=JSON.parse(userItem);
+                                const getToken=userInfo.AccessToken;
+                                const DecodedToken=jwtDecode(getToken);
+                                console.log(DecodedToken.userRole,getToken);
+                                if(DecodedToken.userRole==="Administrator"){                                    
                                   history('/Main/home');
+                                }
+                                else if(DecodedToken.userRole==="worker"){
+                                    history('/Main/home');
+                                }
+                                else if(DecodedToken.userRole==="SuperAdmin"){
+                                    history('/Main/home');
                                 }
                                 else{
                                     history('/UserDefault');

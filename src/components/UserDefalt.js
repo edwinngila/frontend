@@ -5,10 +5,25 @@ import img from '../img/company logo Dark.png';
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { ErrorMessage } from "./context";
+import axios from 'axios';
 
 const UserDefault=()=>{
    const{setMessage,showError,setShowError,setVariant}=useContext(ErrorMessage);
    const history=useNavigate();
+   const sendEmail=()=>{
+      const userItem=localStorage.getItem('item');
+      const userInfo=JSON.parse(userItem);
+      const response = axios.post("http://localhost:4000/users/sendEmailToAdmin",{
+         Email:userInfo.email,
+         FirstName:userInfo.firstName,
+         SecondName:userInfo.SecondName,
+      })
+      setMessage("The notification has been sent to the admin check your email for confirmation");
+      setShowError(!showError);
+      setVariant("success");
+      history('/Login');
+      localStorage.clear();
+   }
     return(
         <Container fluid>
             <div className="row d-flex justify-content-center" style={{backgroundColor:"#707e8b"}}>
@@ -25,14 +40,11 @@ const UserDefault=()=>{
                         </p>
                      </div>
                   </div>
-                  <div className="row mt-1">
-                        <Button className="m-3" size="lg" onClick={()=>{
-                           localStorage.clear();
-                           history('/Login')
-                        }}>Notify</Button>
+                  <div className="row mt-1 d-flex justify-content-center align-items-center">
+                        <Button className="m-3 col-6" size="lg" onClick={sendEmail}>Notify</Button>
                   </div>
-                  <div className="row mt-1">                     
-                  <Button className="m-3" size="lg" onClick={()=>{
+                  <div className="row mt-1 d-flex justify-content-center align-items-center">                     
+                  <Button className="m-3 col-6" size="lg" onClick={()=>{
                            localStorage.clear();
                            history('/Login')
                         }}>Logout</Button>
