@@ -8,6 +8,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons"
 import { ErrorMessage } from "./context";
 import Loading from "./loder"
+import jwtDecode from 'jwt-decode';
 // import ErrorComps from "./ErrorComps"
 const SignUp=()=>{ 
     // const[showError,setShowError]=useState()
@@ -30,8 +31,16 @@ const SignUp=()=>{
     const[error2,setError2]=useState();
     const[show,setShow]=useState(true);
     const[confirmPassword,setConfirmPassword]=useState('');
-    const{setMessage,showError,setShowError,setVariant,login,setLogin}=useContext(ErrorMessage);
+    const{setMessage,showError,setShowError,setVariant}=useContext(ErrorMessage);
     const history=useNavigate();
+    const LevelOfAccess=()=>{
+        const userItem=localStorage.getItem('item');
+        const userInfo=JSON.parse(userItem);
+        const getToken=userInfo.AccessToken;
+        const DecodedToken=jwtDecode(getToken)
+        console.log(DecodedToken.userRole)
+        return DecodedToken.userRole;
+   }
     const handleSubmit= async(e)=>{
         e.preventDefault();
         try{ 
@@ -45,9 +54,10 @@ const SignUp=()=>{
             Email:Email,
             PhoneNumber:phone,
             Password:Password,
-            SecurityAnswer:SecurityAnswer,
+            SecurityAnswer:SecurityAnswer.toLocaleLowerCase(),
             SecurityNumber:SecurityNumber
         })
+        localStorage['item']=JSON.stringify((await Response).data);
         console.log(fistName,secondName,Email,phone,Password,SecurityAnswer,SecurityNumber)
         const Message= (await Response).data.message;
         const color = (await Response).data.variant;
@@ -55,10 +65,16 @@ const SignUp=()=>{
         setVariant(color);
         setShowError(!showError);
         if(color==="success"){
+            
             setShow(!show);                       
             setTimeout(() => {
                 setShow(!show);
-                history('/Main/Home');
+                if(LevelOfAccess==="Administrator"||LevelOfAccess==="worker"){                                    
+                    history('/Main/home');
+                  }
+                  else{
+                      history('/UserDefault');
+                  }
               }, 3000);
           }
          }
@@ -191,11 +207,14 @@ const SignUp=()=>{
              backdrop="static"
              keyboard={true}
             >
-                <ModalHeader>{SecurityQuestion}</ModalHeader>
+                <ModalHeader>
+                    {SecurityQuestion}
+                </ModalHeader>
                 <Form>
                 <ModalBody>
                     <div className="row d-flex justify-content-center align-items-center">
                         <Form className="col-12">
+                          <p className="text-warning"><span className="text-warning">*</span>The text should be one word only answer</p>
                             <FormGroup>
                                 <FormLabel><span style={{color:"red"}}>*</span>Enter your Answer:</FormLabel>
                                 <FormControl className="col-5" onChange={(e)=>{setSecurityAnswer(e.target.value);}}></FormControl>

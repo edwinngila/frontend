@@ -2,9 +2,13 @@ import { Button, Container } from "react-bootstrap";
 
 
 import img from '../img/company logo Dark.png';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { ErrorMessage } from "./context";
 
 const UserDefault=()=>{
+   const{setMessage,showError,setShowError,setVariant}=useContext(ErrorMessage);
+   const history=useNavigate();
     return(
         <Container fluid>
             <div className="row d-flex justify-content-center" style={{backgroundColor:"#707e8b"}}>
@@ -21,11 +25,17 @@ const UserDefault=()=>{
                         </p>
                      </div>
                   </div>
-                  <div className="row mt-4">
-                     <div className="col-12 d-flex justify-content-center mt-4">
-                        <Link><Button className="col-5 m-3">Notify</Button></Link>
-                        <Link><Button className="col-5 ml-2 m-3">Logout</Button></Link>
-                     </div>
+                  <div className="row mt-1">
+                        <Button className="m-3" size="lg" onClick={()=>{
+                           localStorage.clear();
+                           history('/Login')
+                        }}>Notify</Button>
+                  </div>
+                  <div className="row mt-1">                     
+                  <Button className="m-3" size="lg" onClick={()=>{
+                           localStorage.clear();
+                           history('/Login')
+                        }}>Logout</Button>
                   </div>
                 </div>
             </div>            

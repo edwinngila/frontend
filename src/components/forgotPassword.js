@@ -3,9 +3,11 @@ import video from '../video/emailIcon.mp4';
 import { useContext, useState} from "react";
 import { ErrorMessage } from "./context";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const ForgotPassword=()=>{
     const[questionAnswer,setQuestionAnswer]=useState();
+    const history = useNavigate();
     const{setMessage,showError,
         setShowError,setVariant,userEmail,
         securityQuestion
@@ -23,6 +25,9 @@ const ForgotPassword=()=>{
         setMessage(message);
         setVariant(variant);
         setShowError(!showError);
+        if(variant==="success"){
+            history("/Login")
+        }
         }
         catch(err){
             console.log(err);

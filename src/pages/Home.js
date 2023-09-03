@@ -9,8 +9,10 @@ import { Color } from "../components/context"
 import {Link} from 'react-router-dom'
 const Home=()=>{
     const {bgColor} = useContext(Color);
+    const retrieveItems = localStorage.getItem("my_theme");
+    const storedItems= JSON.parse(retrieveItems);
     return(
-        <Container fluid style={{backgroundColor:`${bgColor==='true'? "#707e8b":"#f8f9fa"}`}}>
+        <Container fluid style={{backgroundColor:`${storedItems==="true"? "#707e8b":"#f8f9fa"}`}}>
             <div className="row mt-3 d-flex justify-content-center align-items-center">
                 <div className="col-12 col-md-6 col-sm-9 col-lg-5 mt-3">
                  <Link to="users" style={{textDecoration:"none"}}>

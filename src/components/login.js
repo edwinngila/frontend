@@ -2,33 +2,36 @@ import { Button, Container, Form, FormControl, FormGroup, FormLabel, InputGroup 
 import '../css/Login.css'
 import logo from '../img/dc143c.png'
 import axios from "axios";
-import jwt_decoder from "jwt-decode";
-import { useContext, useState } from "react";
+import jwtDecode from "jwt-decode";
+import { useContext,useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash, faRoad } from "@fortawesome/free-solid-svg-icons";
-import { ErrorMessage } from "./context";
+import { faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
+import { ErrorMessage} from "./context";
 import Loading from "./loder";
 const Login=()=>{
     const[Email,setEmail]=useState('');
     const[Password,setPassword]=useState(''); 
     const[eye,setEye]=useState(true);
-    const{setMessage,showError,setShowError,
+    const history = useNavigate();
+    const{
+        setMessage,showError,setShowError,
         setVariant,login,setLogin,setUserEmail,
         handleQuestion,setHandleQuestion,
         setSecurityQuestion
-    }=useContext(ErrorMessage);
+               }=useContext(ErrorMessage);
+
     const[reset,setReset]=useState();
-    const[rollId,setRollId]=useState();
     const[Loader,setLoader]=useState(true);
-    const[show,setShow]=useState(true);
- // const[token,setToken]=useState()
-    const history= useNavigate();
-    const removeLoader=(id)=>{
-        if(rollId===id){
-            history("/UserDefault");
-        }        
-    }
+    
+   const LevelOfAccess=()=>{
+        const userItem=localStorage.getItem('item');
+        const userInfo=JSON.parse(userItem);
+        const getToken=userInfo.AccessToken;
+        const DecodedToken=jwtDecode(getToken)
+        console.log(DecodedToken.userRole)
+        return DecodedToken.userRole;
+   }
     return(
         <>
         { Loader?
@@ -41,30 +44,32 @@ const Login=()=>{
                 <Form className="p-3" onSubmit={
                     async(e)=>{
                         e.preventDefault();
+                        localStorage.clear();
                         try{
                            const Response= axios.post("http://localhost:4000/users/login",{
                                Email:Email,
                                Password:Password
                            })
-                        //    console.log((await Response).data)
+                           localStorage['item']=JSON.stringify((await Response).data);
                            const message = (await Response).data.message;
                            const variant = (await Response).data.variant;
                            const forgotPassword =(await Response).data.forgotPassword;
-                           const userToken = (await Response).data.token;
-                           localStorage.setItem('token',JSON.stringify(userToken));
                            setMessage(message);
                            setVariant(variant);
                            setReset(forgotPassword);
                            setShowError(!showError);
+
                            if(variant==="success"){
-                            const token = localStorage.getItem('token');
-                            const decoded=jwt_decoder(JSON.parse(token));
-                            removeLoader(decoded.userRollId); 
                             setLoader(!Loader);
                             setTimeout(() => {
                                 setLoader(!Loader);
                                 setLogin(!login);
-                                history('/Main/home');
+                                if(LevelOfAccess==="Administrator"||LevelOfAccess==="worker"){                                    
+                                  history('/Main/home');
+                                }
+                                else{
+                                    history('/UserDefault');
+                                }
                               }, 4000);
                            }
                         }
