@@ -7,8 +7,8 @@ import Landing from './pages/landing';
 import * as React from 'react';
 // import ErrorComps from './components/ErrorComps';
 import { useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
-import { ErrorMessage, LoginUserInfo } from './components/context';
+import { Route, Routes, useNavigate } from 'react-router-dom';
+import { ErrorMessage, LoginUserInfo,showPopUp} from './components/context';
 import SignUp from './components/signup';
 import Login from './components/login';
 import ErrorCompass from './components/ErrorComps';
@@ -35,6 +35,8 @@ function App() {
   const[userEmail,setUserEmail]=useState();
   const[handleQuestion,setHandleQuestion]=useState(false);
   const[securityQuestion,setSecurityQuestion]=useState();
+  const[popUp,setPopup]=useState(true);
+
  
   // ** user information useState
   const[UserFirstName,setUserFirstName]=useState();
@@ -42,6 +44,7 @@ function App() {
   const[UsersEmail,setUsersEmail]=useState();
   const[UserPhoneNumber,setPhoneNumber]=useState();
   const[UserRole,setUserRole]=useState();
+
   
   // !! error messages variants
   const variants={
@@ -51,7 +54,8 @@ function App() {
     login,setLogin,
     userEmail,setUserEmail,
     handleQuestion,setHandleQuestion,
-    securityQuestion,setSecurityQuestion
+    securityQuestion,setSecurityQuestion,
+    popUp,setPopup
   }
 
   // ** user information variants
@@ -61,9 +65,9 @@ function App() {
     UsersEmail,setUsersEmail,
     UserPhoneNumber,setPhoneNumber,
     UserRole,setUserRole
-   }
+   }   
   return (
-    <>  
+    <>
     <ErrorMessage.Provider value={variants}>
       <LoginUserInfo.Provider value={userInformation}>
           <div>

@@ -15,7 +15,8 @@ import DropdownToggle from "react-bootstrap/esm/DropdownToggle"
 import DropdownMenu from "react-bootstrap/esm/DropdownMenu"
 import {Link, useNavigate} from 'react-router-dom'
 import { useContext,useEffect} from "react"
-import { Color, ToggleMenu} from "./context";
+import { Color, ErrorMessage, ToggleMenu} from "./context";
+import axios from "axios"
 // import Main from "../pages/main"
 
 const TopIcons=()=>{
@@ -28,7 +29,25 @@ const TopIcons=()=>{
     const storedItems= JSON.parse(retrieveItems);
     const userRetrieveItems = localStorage.getItem("item");
     const userStoredItems= JSON.parse(userRetrieveItems);
-    const history=useNavigate()
+    const userEmail=userStoredItems.email;
+    const history=useNavigate();
+    const{setMessage,showError,setShowError,setVariant}=useContext(ErrorMessage);
+    const clearLogin=async()=>{
+        try{
+            const response=axios.delete(`http://localhost:4000/users/logout/${userEmail}`)
+            const message=(await response).data.message;
+            if(message==="ok"){
+            localStorage.clear();
+            history('/Login');
+            }
+            
+        }
+        catch(err){
+            setMessage("Internet connection Error");
+            setShowError(!showError);
+            setVariant("danger")
+        }
+    }
     return(        
         <Container fluid className={`${storedItems==="true"?"bgColor":"bg-light"}`}>
             <useContext value={toggle}>
@@ -71,10 +90,7 @@ const TopIcons=()=>{
                               </Link>
                             </NavLink>
                             <NavLink className="item"
-                               onClick={()=>{
-                                 localStorage.clear();
-                                 history('/Login');
-                               }}
+                               onClick={clearLogin}
                             >
                                 <img src={logOut} alt="logOut"></img> Logout
                             </NavLink>

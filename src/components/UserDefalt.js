@@ -10,7 +10,7 @@ import axios from 'axios';
 const UserDefault=()=>{
    const{setMessage,showError,setShowError,setVariant}=useContext(ErrorMessage);
    const history=useNavigate();
-   const sendEmail=()=>{
+   const sendEmail=async()=>{
       const userItem=localStorage.getItem('item');
       const userInfo=JSON.parse(userItem);
       const response = axios.post("http://localhost:4000/users/sendEmailToAdmin",{
@@ -18,9 +18,11 @@ const UserDefault=()=>{
          FirstName:userInfo.firstName,
          SecondName:userInfo.SecondName,
       })
-      setMessage("The notification has been sent to the admin check your email for confirmation");
+      const message = (await response).data.message;
+      const variant =(await response).data.variant;
+      setMessage(message);
+      setVariant(variant);
       setShowError(!showError);
-      setVariant("success");
       history('/Login');
       localStorage.clear();
    }

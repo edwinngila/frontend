@@ -65,7 +65,6 @@ const SignUp=()=>{
         setVariant(color);
         setShowError(!showError);
         if(color==="success"){
-            
             setShow(!show);                       
             setTimeout(() => {
                 setShow(!show);
@@ -79,8 +78,10 @@ const SignUp=()=>{
           }
          }
         }
-        catch(error){
-            console.log(error.response.message);
+        catch(err){
+            setMessage(err.message);  
+            setVariant("danger");            
+            setShowError(!showError);
         }
         finally{
         //    setShow(!show);
@@ -99,7 +100,6 @@ const SignUp=()=>{
         }
     const security=async(e)=>{
         const number= parseInt(e.target.value);
-        console.log(number);
         setSecurityNumber(number);
         setPromptShow(!promptShow);
         console.log(promptShow);
@@ -109,7 +109,9 @@ const SignUp=()=>{
             setSecurityQuestion(item);
         }
         catch(err){
-            console.log(err);
+            setMessage(err.message);  
+            setVariant("danger");            
+            setShowError(!showError);
         }
     }
     return(     

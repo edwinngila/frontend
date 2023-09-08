@@ -28,7 +28,7 @@ const Login=()=>{
         { Loader?
         <Container fluid className="mt-3">
            <div className="row d-flex justify-content-center align-items-center">
-             <div className="col-11 col-md-4 col-sm-7 col-lg-4 form">
+             <div className="col-11 col-md-7 col-sm-7 col-lg-4 form">
                     <div className="row">
                        <div className="img2"></div>
                     </div>
@@ -76,7 +76,9 @@ const Login=()=>{
                            }
                         }
                         catch(err){
-                           console.log(err.response.message);
+                            setMessage(err.message);  
+                            setVariant("danger");            
+                            setShowError(!showError);
                         }
                        }
                     }>                
@@ -112,8 +114,10 @@ const Login=()=>{
                                             setSecurityQuestion(question);
                                             console.log(question);
                                             }
-                                        catch(e){
-                                                console.log(e)
+                                        catch(err){
+                                            setMessage(err.message);  
+                                            setVariant("danger");            
+                                            setShowError(!showError);
                                         }
                                     }
                                     }><u >Forgot password?</u></span>
