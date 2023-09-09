@@ -1,34 +1,31 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, Container, Form, FormControl, FormGroup, FormLabel, FormSelect, Modal, ModalBody, ModalFooter, ModalHeader, Table } from "react-bootstrap"
 import axios from 'axios';
+import { ErrorMessage } from "../components/context";
 
 const Users=()=>{
     const[dbOutCome,setDbOutCome]=useState([]);
-    const[showPopUp,setShowPopUp]=useState(true);
+    const[showPopUp,setShowPopUp]=useState(false);
+    const[showPopUp2,setShowPopUp2]=useState(false);
     const[userName,setUserName]=useState();
     const[Email,setEmail]=useState();
     const[phone,setPhone]=useState();
     const[role,setRole]=useState();
     const[id,setId]=useState();
     const[visibility,setVisibility]=useState(true);
+    const{setMessage,showError,setShowError,setVariant}=useContext(ErrorMessage);
+
     const get=async()=>{
         const results= await axios.get('http://localhost:4000/Admin/usersFromDB');
         const outcome=results.data.from
         setDbOutCome(outcome);
-        // outcome.from.forEach(element => {
-        // const FirstName=element.FirstName;
-        // const SecondName=element.SecondName;
-        // const Email=element.Email;
-        // const PhoneNumber=element.PhoneNumber;
-        
-        // });
     }
     useEffect(()=>{
         get();
     },[])
     const popups=(userId)=>{
-        const id=userId-1;
-        const user=dbOutCome[id];
+        const user=dbOutCome.find((item)=>item.id===userId)
+        if(user){
         setId(userId);
          setUserName(user.FirstName+user.SecondName);
          setEmail(user.Email);
@@ -40,6 +37,7 @@ const Users=()=>{
          else if(user.roleId===2){
             setRole("Administrator");
             setShowPopUp(!showPopUp);
+            console.log(user.roleId);
          }
          else if(user.roleId===3){
             setRole("NormalUser");
@@ -48,6 +46,43 @@ const Users=()=>{
          else{
             setRole("Super Admin");
          }
+        }
+    }
+    const update=async(e)=>{
+       try{
+        const upDateId=e.target.value;
+        console.log(upDateId);
+        const Response= await axios.put("http://localhost:4000/Admin/uppDateUser",{
+            userId:id,
+            updateUserRole:upDateId
+        });
+        const message=Response.data.message;
+        const variant=Response.data.variant;
+        setMessage(message);  
+        setVariant(variant);            
+        setShowError(!showError);
+       }
+       catch(err){
+            setMessage(err.message);  
+            setVariant("danger");            
+            setShowError(!showError);
+       }
+    }
+    const removeUser=async()=>{
+        setShowPopUp2(!showPopUp2);
+        try{
+            const Response= await axios.delete(`http://localhost:4000/Admin/removeUser/${id}`);
+            const message=Response.data.message;
+            const variant=Response.data.variant;
+            setMessage(message);  
+            setVariant(variant);            
+            setShowError(!showError);
+        }catch(err){
+            setMessage(err.message);  
+            setVariant("danger");            
+            setShowError(!showError);
+        }
+        window.location.reload();
     }
     return(
         <Container className="mt-3">
@@ -70,8 +105,8 @@ const Users=()=>{
                             <td>{items.FirstName}{items.SecondName}</td>
                             <td>{items.Email}</td>
                             <td>{
-                                items.roleId===1 ?(<span>Administrator</span>):
-                                items.roleId===2 ?(<span>worker</span>):
+                                items.roleId===1 ?(<span>worker</span>):
+                                items.roleId===2 ?(<span>Administrator</span>):
                                 items.roleId===3 ?(<span>NormalUser</span>):
                                 (<span>SuperAdmin</span>)
                             }</td>
@@ -93,7 +128,6 @@ const Users=()=>{
                 <ModalBody>
                     <div className="row d-flex justify-content-center align-items-center">
                         <Form className="col-12">
-                          <p className="text-warning"><span className="text-warning">*</span>The text should be one word only answer</p>
                             <FormGroup>
                                 <FormLabel><span style={{color:"red"}}>*</span>User Id:</FormLabel>
                                 <FormControl className="col-5" value={id} readOnly></FormControl>
@@ -110,9 +144,9 @@ const Users=()=>{
                                 <FormLabel><span style={{color:"red"}}>*</span>Email:</FormLabel>
                                 <FormControl className="col-5" value={Email} readOnly></FormControl>
                             </FormGroup>
-                            <FormGroup style={{display:visibility? "none":"block"}}>
+                            <FormGroup>
                                 <FormLabel><span style={{color:"red"}}>*</span>	Roll:</FormLabel>
-                                <FormSelect>
+                                <FormSelect onChange={update}>
                                     <option selected>{role}</option>
                                     <option value={1}>worker</option>
                                     <option value={2}>Administrator</option>
@@ -123,8 +157,30 @@ const Users=()=>{
                     </div>
                 </ModalBody>
                 <ModalFooter className="ms-auto">
-                     <Button>Delete User</Button>
-                     <Button onClick={()=>{setShowPopUp(!showPopUp)}}>OK</Button>
+                     <Button onClick={()=>{setShowPopUp2(!showPopUp2);setShowPopUp(!setShowPopUp)}}>Delete User</Button>
+                     <Button onClick={()=>{setShowPopUp(!showPopUp);window.location.reload()}}>OK</Button>
+                </ModalFooter>
+                </Form>
+            </Modal>
+            <Modal
+             show={showPopUp2}
+             backdrop="static"
+             keyboard={true}
+             className="bg-danger"
+            >
+                <ModalHeader>
+                    <h2>WARNING!!</h2>
+                </ModalHeader>
+                <Form>
+                <ModalBody>
+                    <div className="row d-flex justify-content-center align-items-center">
+                        <Form className="col-12">
+                          <p className="text-warning"><span className="text-warning">*</span>Do you really what to delete the user</p>
+                        </Form>
+                    </div>
+                </ModalBody>
+                <ModalFooter className="ms-auto">
+                     <Button onClick={removeUser}>OK</Button>
                 </ModalFooter>
                 </Form>
             </Modal>
