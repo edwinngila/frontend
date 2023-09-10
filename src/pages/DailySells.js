@@ -1,37 +1,82 @@
-import { Card, Container, Form, FormControl, FormGroup, FormLabel, Table, Button } from "react-bootstrap";
+import { Card, Container, Form, FormControl, FormGroup, FormLabel, Table, Button, Placeholder } from "react-bootstrap";
 import { ResponsiveLine } from '@nivo/line'
 import Data from "../components/data"
 import CardHeader from "react-bootstrap/esm/CardHeader";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import profit from '../img/chevron-arrow-up.png'
+import { ErrorMessage } from "../components/context";
+import axios from 'axios';
 // import loss from '../img/chevron-arrow-down.png'
 const Graph=()=>{
-    // eslint-disable-next-line no-unused-vars
+    const{setMessage,showError,setShowError,setVariant}=useContext(ErrorMessage);
     const[inputOne,SetInputOne]=useState();
-    // eslint-disable-next-line no-unused-vars
     const[inputTwo,SetInputTwo]=useState();
-    // const[row,SetRow]=useState([])
+    const[row1,setRow1]=useState([]);
+    const[row2,setRow2]=useState([]);
+    const[row,setRow]=useState([]);
+    const[total,setTotal]=useState(0);
+    const[dailyTotal,setDailyTotal]=useState([]);
+    const getData=async()=>{
+        try{
+            const response=await axios.get("http://localhost:4000/Admin/DailyExpensesTable");
+            setRow(response.data.TBdata);
+            setTotal(response.data.sum);
+            const response2=await axios.get("http://localhost:4000/Admin/DailySellsItems")
+            setRow1(response2.data.items1);
+            setRow2(response2.data.items2);
+            setDailyTotal(response2.data.total);
+        }
+        catch(err){
+            setMessage(err.message);
+            setShowError(!showError);
+            setVariant("danger");
+        }
+    }
+    useEffect(()=>{
+        getData();
+    },[]);
     return(
      <>
      <Container>
         <div className="row d-flex justify-content-center align-items-center">
             <div className="col-12 col-md-8 col-sm-12 col-lg-6">
-                <Form className="row">
+                <Form className="row" onSubmit={async(e)=>{
+                    e.preventDefault();
+                    try{
+                        const result= await axios.post("http://localhost:4000/Admin/DailyExpenses",{
+                            Expense:inputOne,
+                            Cost:inputTwo
+                        })
+                        const message = result.data.message;
+                        const variant= result.data.variant;
+                        setMessage(message);
+                        setVariant(variant);
+                        setShowError(!showError);
+                    }
+                    catch(err){
+                        setMessage(err.message);
+                        setShowError(!showError);
+                        setVariant("danger");
+                    }
+                    SetInputOne("");
+                    SetInputTwo("");
+                    window.location.reload();  
+                }}>
                   <h1>Daily Expense</h1>
                     <FormGroup className="col-6">
                         <FormLabel>Name of Expense:</FormLabel>
-                        <FormControl onChange={(e)=>{SetInputOne(e.target.value)}}></FormControl>
+                        <FormControl value={inputOne} onChange={(e)=>{SetInputOne(e.target.value)}}></FormControl>
                     </FormGroup>
                     <FormGroup className="col-6">
                         <FormLabel>Cost:</FormLabel>
-                        <FormControl onChange={(e)=>{SetInputTwo(e.target.value)}}></FormControl>
-                    </FormGroup>
+                        <FormControl value={inputTwo} onChange={(e)=>{SetInputTwo(e.target.value)}}></FormControl>
+                    </FormGroup>  
+                    <FormGroup className="row">
+                        <div className="col-12 mt-3 d-flex align-items-end justify-content-end">
+                          <Button className="col-3" type="submit">ADD ITEM</Button>
+                        </div>
+                    </FormGroup>                
                 </Form>
-                <div className="row d-flex align-items-end justify-content-end">
-                   <div className="col-5 mt-3 d-flex align-items-end justify-content-end">
-                      <Button>ADD ITEM</Button>
-                   </div>
-                </div>
             </div> 
         </div>
         <div className="row d-flex justify-content-center align-items-center mt-3">
@@ -44,17 +89,19 @@ const Graph=()=>{
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>water</td>
-                            <td>200ksh</td>
-                        </tr>
+                        {row.map((items)=>(
+                            <tr key={items.id}>
+                               <td>{items.Name_of_Expense? items.Name_of_Expense:<Placeholder xs={12} size="lg" animation="wave"/>}</td>
+                               <td>{items.Cost? items.Cost:<Placeholder xs={12} size="lg" animation="wave"/>}</td>
+                            </tr>
+                        ))}
                     </tbody>
                 </Table>
                 <div className="row d-flex align-items-end justify-content-end">
                     <div className="col-5">
                         <FormGroup>
                             <FormLabel>Total Expense:</FormLabel>
-                            <FormControl></FormControl>
+                            <FormControl value={total} readOnly></FormControl>
                         </FormGroup>
                     </div>
                 </div>
@@ -72,32 +119,36 @@ const Graph=()=>{
                             <Table className="mt-3">
                                 <thead>
                                     <th>NAME</th>
-                                    <th>COST</th>
                                     <th>TIMES SOLD</th>
                                 </thead>
                                 <tbody>
-                                    <td>Chapati</td>
-                                    <td>200</td>
-                                    <td>20</td>
+                                    {row1.map((items)=>(
+                                        <tr>
+                                            <td>{items.itemName}</td>
+                                            <td>{items.numbers}</td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </Table>
                         </h5>
                         <h5>
-                            The lest item bought today:
+                            The lest item sold today:
                             <Table className="mt-3">
                                 <thead>
                                     <th>NAME</th>
-                                    <th>COST</th>
                                     <th>TIMES SOLD</th>
                                 </thead>
                                 <tbody>
-                                    <td>Chapati</td>
-                                    <td>200</td>
-                                    <td>20</td>
+                                {row2.map((items)=>(
+                                        <tr>
+                                            <td>{items.itemName}</td>
+                                            <td>{items.numbers}</td>
+                                        </tr>
+                                ))}
                                 </tbody>
                             </Table>
                         </h5>
-                        <h5>Daily income:</h5>
+                        <h5>Daily income:<span> </span><span style={{color:"#f8e401"}}>{dailyTotal.map((item)=>(item.price))}KSH</span></h5>
                     </div>
                 </Card>
                 </div>
@@ -105,9 +156,9 @@ const Graph=()=>{
                 <Card className="p-2  bg-dark " style={{color:"white"}}>
                     <CardHeader><h4>Daily income</h4></CardHeader>
                     <div>
-                        <h5>Total Daily Expenses:{}</h5>
-                        <h5>Daily Sells:{}</h5>
-                        <h5>Daily income:{}</h5>
+                        <h5>Total Daily Expenses:<span> </span><span style={{color:"#f8e401"}}>{total} KSH</span></h5>
+                        <h5>Daily Sells:<span> </span><span style={{color:"#f8e401"}}>{dailyTotal.map((item)=>(item.price))} KSH</span></h5>
+                        <h5>Daily income:<span> </span><span style={{color:"#f8e401"}}>{dailyTotal.map((item)=>(item.price-total))} KSH</span></h5>
                         <h5>
                             <span>
                                 <img src={profit} alt="profit"></img>
