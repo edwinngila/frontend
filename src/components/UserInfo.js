@@ -38,7 +38,7 @@ const UserInfo=()=>{
                                 </ListGroupItem>
                                 <ListGroupItem className="bg-dark list d-flex justify-content-between">
                                         <span>First Name:</span>
-                                        <span><FormControl value={firstName} onChange={(e)=>{setFirstName(e.target.value)}} id="fname"></FormControl></span>
+                                        <span><FormControl value={firstName} onChange={(e)=>{localStorage.setItem(storedItems.firstName,e.target.value)}} id="fname"></FormControl></span>
                                 </ListGroupItem>
                                 <ListGroupItem className="bg-dark list d-flex justify-content-between">
                                         <span>Second Name:</span>
