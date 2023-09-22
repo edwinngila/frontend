@@ -1,27 +1,77 @@
-import {Button, Container, Form, FormControl, Image, ListGroup, ListGroupItem, Placeholder } from "react-bootstrap";
+import {Button, Container, Form, FormControl, FormGroup, ListGroup, ListGroupItem, Placeholder } from "react-bootstrap";
 import prof from '../img/prof2.jpg'
 import '../css/UserInfo.css'
 import { useContext, useState } from "react";
-import { LoginUserInfo } from "./context";
+import { ErrorMessage} from "./context";
+import axios from "axios";
 const UserInfo=()=>{
+    const{setMessage,showError,setShowError,setVariant}=useContext(ErrorMessage);
     const retrieveItems = localStorage.getItem("item");
     const storedItems= JSON.parse(retrieveItems);
-    const{
-        UserFirstName,
-        UserSecondName,
-        UsersEmail,
-        UserPhoneNumber,
-        UserRole,
-    }=useContext(LoginUserInfo)
     const[firstName,setFirstName]=useState(storedItems.firstName);
     const[secondName,setSecondName]=useState(storedItems.SecondName);
     const[phoneNo,setPhoneNo]=useState(storedItems.phone);
     const[email,setEmail]=useState(storedItems.email);
     const[password,setPassword]=useState();
+    const checkPassword=async()=>{
+        try{
+            const response=await axios.get("http://localhost:4000/users/userPassword",{
+                password:password,
+                userId:storedItems.userId
+            })
+            console.log(storedItems.userId);
+            const message= response.data.message;
+            const variant= response.data.variant;
+            setMessage(message);
+            setVariant(variant); 
+            setShowError(!showError);
+        }
+        catch(error){
+            setMessage(error.message);
+            setShowError(!showError);
+            setVariant("danger");
+        }
+    }
+    const userInfo=async()=>{
+        const updateInfo={
+            ...storedItems,
+            firstName:firstName,
+            SecondName:secondName,
+            phone:phoneNo,
+            email:email,
+            password:password
+        }
+        localStorage.setItem("item",JSON.stringify(updateInfo));
+        try {
+            const response=await axios.patch("http://localhost:4000/users/userInfo",{
+                firstName:storedItems.firstName,
+                SecondName:storedItems.SecondName,
+                phone:storedItems.phone,
+                email:storedItems.email,
+                userId:storedItems.userId,
+                password:password
+            }) 
+            const message= response.data.message;
+            const variant= response.data.variant;
+            setMessage(message);
+            setVariant(variant); 
+            setShowError(!showError);
+                            
+        } catch (error) {
+            setMessage(error.message);
+            setShowError(!showError);
+            setVariant("danger");
+        }
+    }
+    const PasswordFocus=()=>{
+        setMessage("you need to enter your old or your password reset one time password to change your password");
+        setShowError(!showError);
+        setVariant("warning");
+    }
     return(
         <Container fluid style={{borderRadius:"20px"}}>
             <div className="row d-flex align-items-center justify-content-center mt-2 rounded-3">
-                <div className="col-11 col-md-4 col-lg-4 col-sm-4 bg-dark info" style={{borderRadius:"20px"}}>
+                <div className="col-11 col-md-7 col-lg-5 col-sm-8 bg-dark info" style={{borderRadius:"20px"}}>
                     <div className="row">
                         <div className="col-12 d-flex justify-content-center align-items-center flex-column">
                             <img src={prof} alt={<Placeholder/>} className="img mt-4 img-thumbnail"></img>
@@ -38,7 +88,7 @@ const UserInfo=()=>{
                                 </ListGroupItem>
                                 <ListGroupItem className="bg-dark list d-flex justify-content-between">
                                         <span>First Name:</span>
-                                        <span><FormControl value={firstName} onChange={(e)=>{localStorage.setItem(storedItems.firstName,e.target.value)}} id="fname"></FormControl></span>
+                                        <span><FormControl value={firstName} onChange={(e)=>{setFirstName(e.target.value)}} id="fname"></FormControl></span>
                                 </ListGroupItem>
                                 <ListGroupItem className="bg-dark list d-flex justify-content-between">
                                         <span>Second Name:</span>
@@ -52,12 +102,19 @@ const UserInfo=()=>{
                                         <span>Email:</span>
                                         <span><FormControl value={email} onChange={(e)=>{setEmail(e.target.value)}}></FormControl></span>
                                 </ListGroupItem>
+                                <ListGroupItem className="bg-dark list d-flex justify-content-between">
+                                        <span>Password</span>
+                                        <span>
+                                            <FormControl onFocus={PasswordFocus} onChange={(e)=>{setPassword(e.target.value)}}></FormControl>
+                                            <Button className="mt-3" onClick={checkPassword}>Check validity</Button>
+                                        </span>
+                                </ListGroupItem>
                             </ListGroup>
-                            <div className="row">
+                            <FormGroup className="row">
                                 <div className="col-12  d-flex justify-content-center align-items-center">
-                                    <Button className="btns mt-2 mb-2">Submit Changes</Button>                                
+                                    <Button onClick={userInfo} className="btns mt-2 mb-2">Submit Changes</Button>                                
                                 </div>
-                            </div>  
+                            </FormGroup>  
                      </Form>          
                    </div>
                 </div>

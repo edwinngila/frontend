@@ -11,12 +11,18 @@ const UserDefault=()=>{
    const{setMessage,showError,setShowError,setVariant}=useContext(ErrorMessage);
    const history=useNavigate();
    const sendEmail=async()=>{
+      try{
+      const time=new Date()
       const userItem=localStorage.getItem('item');
       const userInfo=JSON.parse(userItem);
       const response = axios.post("http://localhost:4000/users/sendEmailToAdmin",{
          Email:userInfo.email,
          FirstName:userInfo.firstName,
          SecondName:userInfo.SecondName,
+      })
+      axios.post("http://localhost:4000/Admin/notification",{
+         message:`The user with the the email ${userInfo.email} is requesting an elevation`,
+         time:time
       })
       const message = (await response).data.message;
       const variant =(await response).data.variant;
@@ -25,6 +31,10 @@ const UserDefault=()=>{
       setShowError(!showError);
       history('/Login');
       localStorage.clear();
+    }
+    catch(err){
+
+    }
    }
     return(
         <Container fluid>

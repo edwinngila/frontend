@@ -58,7 +58,6 @@ const SignUp=()=>{
             SecurityNumber:SecurityNumber
         })
         localStorage['item']=JSON.stringify((await Response).data);
-        console.log(fistName,secondName,Email,phone,Password,SecurityAnswer,SecurityNumber)
         const Message= (await Response).data.message;
         const color = (await Response).data.variant;
         setMessage(Message);
@@ -135,11 +134,11 @@ const SignUp=()=>{
                             <FormGroup className="mt-5">
                                 <FormGroup >
                                     <FormLabel style={{color:"#c2b302"}}>First Name:</FormLabel>
-                                    <FormControl className="input" onChange={(e)=>{setFirstName(e.target.value)}}></FormControl>
+                                    <FormControl className="input" autoComplete="off" onChange={(e)=>{setFirstName(e.target.value)}}></FormControl>
                                 </FormGroup>
                                 <FormGroup className="mt-5">
                                     <FormLabel style={{color:"#c2b302"}}>Second Name:</FormLabel>
-                                    <FormControl className="input" onChange={(e)=>{setSecondName(e.target.value)}}></FormControl>
+                                    <FormControl className="input" autoComplete="off" onChange={(e)=>{setSecondName(e.target.value)}}></FormControl>
                                 </FormGroup>
                            </FormGroup>
                            <FormGroup className="col-12 d-flex align-items-center justify-content-center flex-column mt-4">
@@ -149,11 +148,11 @@ const SignUp=()=>{
                             <Tab eventKey="Profile" title="Profile" id="profile">
                                     <FormGroup className="mt-5">
                                         <FormLabel style={{color:"#c2b302"}}>Email:</FormLabel>
-                                        <FormControl className="input" onChange={(e)=>{setEmail(e.target.value)}} type="email"></FormControl>
+                                        <FormControl className="input" autoComplete="off" onChange={(e)=>{setEmail(e.target.value)}} type="email"></FormControl>
                                     </FormGroup> 
                                     <FormGroup className="mt-4">
                                         <FormLabel style={{color:"#c2b302"}}>Phone:</FormLabel>
-                                        <FormControl className="input" onChange={(e)=>{setPhone(e.target.value)}}></FormControl>
+                                        <FormControl className="input" autoComplete="off" onChange={(e)=>{setPhone(e.target.value)}}></FormControl>
                                     </FormGroup>
                                     <FormGroup className="col-12 d-flex align-items-center justify-content-center flex-column mt-4">
                                         <Link to="/Login"><span><u>Login instead?</u></span></Link>
@@ -175,7 +174,7 @@ const SignUp=()=>{
                             <FormGroup className="mt-5 col-6">
                                 <FormLabel style={{color:"#c2b302"}}>Password:</FormLabel>
                                 <InputGroup>
-                                <FormControl className="input" type={eye1? "password":"text"} onChange={handleChange}></FormControl>
+                                <FormControl className="input" autoComplete="off" type={eye1? "password":"text"} onChange={handleChange}></FormControl>
                                 <InputGroup.Text className="text" style={{cursor:"pointer"}} onClick={()=>{setEye1(!eye1); setPassword1("text")}}><FontAwesomeIcon icon={eye1? faEyeSlash:faEye}></FontAwesomeIcon></InputGroup.Text>
                                 </InputGroup>   
                             <div>{error}</div>                         
@@ -184,7 +183,7 @@ const SignUp=()=>{
                             <FormLabel style={{color:"#c2b302"}}>Confirm Password:</FormLabel>
                             <div className="row">
                                 <InputGroup className="col-12">
-                                    <FormControl className="input" type={eye2? "password":"text"} onChange={(e)=>{setConfirmPassword(e.target.value);setError2("");}}></FormControl>
+                                    <FormControl className="input" autoComplete="off" type={eye2? "password":"text"} onChange={(e)=>{setConfirmPassword(e.target.value);setError2("");}}></FormControl>
                                     <InputGroup.Text className="text" style={{cursor:"pointer"}} onClick={()=>{setEye2(!eye2); setPassword2("text")}}><FontAwesomeIcon icon={eye2? faEyeSlash:faEye}></FontAwesomeIcon></InputGroup.Text>
                                 </InputGroup>   
                                 <div className="col-12">

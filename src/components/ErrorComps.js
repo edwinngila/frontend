@@ -7,7 +7,7 @@ const { Container,Toast, ToastBody, ToastHeader,} = require("react-bootstrap");
 const ErrorCompass=()=>{
   const{Message,variant,showError,setShowError}=useContext(ErrorMessage);
   return(
-    <Container fluid className="cont mt-3 d-flex align-items-end justify-content-end">   
+    <Container fluid className="cont mt-3 d-flex align-items-end justify-content-end" style={{display:"fixed"}}>   
        <Toast onClose={()=>setShowError(!showError)} show={showError} delay={5000} autohide bg={variant}>
           <ToastHeader>
             <img src={img} alt="img"></img>

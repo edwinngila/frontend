@@ -59,7 +59,6 @@ const Login=()=>{
                                 const userInfo=JSON.parse(userItem);
                                 const getToken=userInfo.AccessToken;
                                 const DecodedToken=jwtDecode(getToken);
-                                console.log(DecodedToken.userRole,getToken);
                                 if(DecodedToken.userRole==="Administrator"){                                    
                                   history('/Main/home');
                                 }
@@ -90,12 +89,12 @@ const Login=()=>{
                         </div>       
                         <FormGroup>
                             <FormLabel className="label mt-1" style={{color:'crimson'}}>Email:</FormLabel>
-                            <FormControl className="input"  onChange={(e)=>{setEmail(e.target.value)}}></FormControl>
+                            <FormControl className="input" autoComplete="off"  onChange={(e)=>{setEmail(e.target.value)}}></FormControl>
                         </FormGroup>
                         <FormGroup>
                             <FormLabel className="label mt-3" style={{color:'crimson'}}>Password:</FormLabel>
                             <InputGroup>
-                               <FormControl className="input" type={eye? "password":"text"} onChange={(e)=>{setPassword(e.target.value)}}></FormControl>
+                               <FormControl className="input" autoComplete="off" type={eye? "password":"text"} onChange={(e)=>{setPassword(e.target.value)}}></FormControl>
                                <InputGroup.Text style={{cursor:"pointer"}} className="text" onClick={()=>{setEye(!eye)}}><FontAwesomeIcon icon={eye? faEyeSlash:faEye}></FontAwesomeIcon></InputGroup.Text>
                             </InputGroup>
                         </FormGroup>
