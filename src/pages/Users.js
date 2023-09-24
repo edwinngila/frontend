@@ -90,7 +90,7 @@ const Users=()=>{
                 <Table responsive>
                     <thead>
                         <tr>
-                            <th>User Id</th>
+                            <th>Id</th>
                             <th>Name</th>
                             <th>Email</th>
                             <th>Roll</th>
@@ -181,6 +181,7 @@ const Users=()=>{
                 </ModalBody>
                 <ModalFooter className="ms-auto">
                      <Button onClick={removeUser}>OK</Button>
+                     <Button onClick={()=>{setShowPopUp2(!showPopUp2)}}>NO</Button>
                 </ModalFooter>
                 </Form>
             </Modal>

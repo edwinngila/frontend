@@ -1,4 +1,4 @@
-import {Button, Container, Form, FormControl, FormGroup, ListGroup, ListGroupItem, Placeholder } from "react-bootstrap";
+import {Button, Container, Form, FormControl, FormGroup, FormLabel, ListGroup, ListGroupItem, Modal, ModalBody, ModalFooter, ModalHeader, Placeholder } from "react-bootstrap";
 import prof from '../img/prof2.jpg'
 import '../css/UserInfo.css'
 import { useContext, useState } from "react";
@@ -13,6 +13,7 @@ const UserInfo=()=>{
     const[phoneNo,setPhoneNo]=useState(storedItems.phone);
     const[email,setEmail]=useState(storedItems.email);
     const[password,setPassword]=useState();
+    const[showPopUp,setShowPopUp]=useState(false)
     const checkPassword=async()=>{
         try{
             const response=await axios.get("http://localhost:4000/users/userPassword",{
@@ -71,7 +72,7 @@ const UserInfo=()=>{
     return(
         <Container fluid style={{borderRadius:"20px"}}>
             <div className="row d-flex align-items-center justify-content-center mt-2 rounded-3">
-                <div className="col-11 col-md-7 col-lg-5 col-sm-8 bg-dark info" style={{borderRadius:"20px"}}>
+                <div className="col-11 col-md-7 col-lg-4 col-sm-8 bg-dark info" style={{borderRadius:"20px"}}>
                     <div className="row">
                         <div className="col-12 d-flex justify-content-center align-items-center flex-column">
                             <img src={prof} alt={<Placeholder/>} className="img mt-4 img-thumbnail"></img>
@@ -88,37 +89,72 @@ const UserInfo=()=>{
                                 </ListGroupItem>
                                 <ListGroupItem className="bg-dark list d-flex justify-content-between">
                                         <span>First Name:</span>
-                                        <span><FormControl value={firstName} onChange={(e)=>{setFirstName(e.target.value)}} id="fname"></FormControl></span>
+                                        <span>{firstName}</span>
                                 </ListGroupItem>
                                 <ListGroupItem className="bg-dark list d-flex justify-content-between">
                                         <span>Second Name:</span>
-                                        <span><FormControl value={secondName} onChange={(e)=>{setSecondName(e.target.value)}}></FormControl></span>
+                                        <span>{secondName}</span>
                                 </ListGroupItem>
                                 <ListGroupItem className="bg-dark list d-flex justify-content-between">
                                         <span>phone number:</span>
-                                        <span><FormControl value={phoneNo} onChange={(e)=>{setPhoneNo(e.target.value)}}></FormControl></span>
+                                        <span>{phoneNo}</span>
                                 </ListGroupItem>
                                 <ListGroupItem className="bg-dark list d-flex justify-content-between">
                                         <span>Email:</span>
-                                        <span><FormControl value={email} onChange={(e)=>{setEmail(e.target.value)}}></FormControl></span>
-                                </ListGroupItem>
-                                <ListGroupItem className="bg-dark list d-flex justify-content-between">
-                                        <span>Password</span>
-                                        <span>
-                                            <FormControl onFocus={PasswordFocus} onChange={(e)=>{setPassword(e.target.value)}}></FormControl>
-                                            <Button className="mt-3" onClick={checkPassword}>Check validity</Button>
-                                        </span>
+                                        <span>{email}</span>
                                 </ListGroupItem>
                             </ListGroup>
                             <FormGroup className="row">
                                 <div className="col-12  d-flex justify-content-center align-items-center">
-                                    <Button onClick={userInfo} className="btns mt-2 mb-2">Submit Changes</Button>                                
+                                    <Button onClick={()=>{setShowPopUp(!showPopUp)}} className="btns mt-2 mb-2">Edit information</Button>                                
                                 </div>
                             </FormGroup>  
                      </Form>          
                    </div>
                 </div>
             </div>
+            <Modal
+             show={showPopUp}
+             backdrop="static"
+             keyboard={true}
+            >
+                <ModalHeader>
+                    <h2>USER INFORMATION</h2>
+                </ModalHeader>
+                <Form>
+                <ModalBody>
+                    <div className="row d-flex justify-content-center align-items-center">
+                        <Form className="col-12">
+                            <FormGroup>
+                                <FormLabel><span style={{color:"red"}}>*</span>User Id:</FormLabel>
+                                <FormControl className="col-5" value={firstName} ></FormControl>
+                            </FormGroup>
+                            <FormGroup>
+                                <FormLabel><span style={{color:"red"}}>*</span>User Name:</FormLabel>
+                                <FormControl className="col-5" value={secondName} ></FormControl>
+                            </FormGroup>
+                            <FormGroup>
+                                <FormLabel><span style={{color:"red"}}>*</span>User Phone Number:</FormLabel>
+                                <FormControl className="col-5" value={phoneNo} ></FormControl>
+                            </FormGroup>
+                            <FormGroup>
+                                <FormLabel><span style={{color:"red"}}>*</span>Email:</FormLabel>
+                                <FormControl className="col-5" value={email} ></FormControl>
+                            </FormGroup>
+                            <FormGroup>
+                                <FormLabel><span style={{color:"red"}}>*</span>upload profile img:</FormLabel>
+                                <FormControl type="file"></FormControl>
+                            </FormGroup>
+                        </Form>
+                    </div>
+                </ModalBody>
+                <ModalFooter className="ms-auto">
+                     <Button>Change password</Button>
+                     <Button onClick={()=>{setShowPopUp(!showPopUp);window.location.reload()}}>update User</Button>
+                     <Button onClick={()=>{setShowPopUp(!showPopUp)}}>clear</Button>
+                </ModalFooter>
+                </Form>
+            </Modal>
         </Container>
     );
 }

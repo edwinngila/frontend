@@ -1,5 +1,5 @@
 import { Card, Container, Form, FormControl, FormGroup, FormLabel, Table, Button, Placeholder } from "react-bootstrap";
-import { ResponsiveLine } from '@nivo/line'
+import {ResponsiveBar} from '@nivo/bar';
 import Data from "../components/data"
 import CardHeader from "react-bootstrap/esm/CardHeader";
 import { useContext, useEffect, useState } from "react";
@@ -11,6 +11,7 @@ const Graph=()=>{
     const{setMessage,showError,setShowError,setVariant}=useContext(ErrorMessage);
     const[inputOne,SetInputOne]=useState();
     const[inputTwo,SetInputTwo]=useState();
+    const[graphProps,setGraphProps]=useState([])
     const[row1,setRow1]=useState([]);
     const[row2,setRow2]=useState([]);
     const[row,setRow]=useState([]);
@@ -32,8 +33,19 @@ const Graph=()=>{
             setVariant("danger");
         }
     }
+    const graphData=async()=>{
+        try {
+        const response = await axios.get("http://localhost:4000/Admin/graphSells")  
+        setGraphProps(response.data.graphData);     
+        } catch (error) {
+            setMessage(error.message);
+            setShowError(!showError);
+            setVariant("danger");
+        }
+    }
     useEffect(()=>{
         getData();
+        graphData();
     },[]);
     return(
      <>
@@ -125,7 +137,7 @@ const Graph=()=>{
                                     {row1.map((items)=>(
                                         <tr>
                                             <td>{items.itemName}</td>
-                                            <td>{items.numbers}</td>
+                                            <td>{items.totalSell}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -142,7 +154,7 @@ const Graph=()=>{
                                 {row2.map((items)=>(
                                         <tr>
                                             <td>{items.itemName}</td>
-                                            <td>{items.numbers}</td>
+                                            <td>{items.totalSell}</td>
                                         </tr>
                                 ))}
                                 </tbody>
@@ -208,77 +220,128 @@ const Graph=()=>{
             </div>
         </Container>
         <Container fluid className="col-12 col-md-12" style={{minHeight:"90vh"}}>
-            <ResponsiveLine
-            data={Data}
-            margin={{ top: 50, right: 50, bottom: 90, left: 60 }}
-            xScale={{ type: 'point' }}
-            yScale={{
-                type: 'linear',
-                min: 'auto',
-                max: 'auto',
-                stacked: true,
-                reverse: false
-            }}
-            yFormat=" >-.2f"
-            axisTop={null}
-            axisRight={null}
-            axisBottom={{
-                tickSize: 5,
-                tickPadding: 5,
-                tickRotation: 0,
-                legend: 'transportation',
-                legendOffset: 36,
-                legendPosition: 'middle'
-            }}
-            axisLeft={{
-                tickSize: 5,
-                tickPadding: 5,
-                tickRotation: 0,
-                legend: 'count',
-                legendOffset: -40,
-                legendPosition: 'middle'
-            }}
-            pointSize={10}
-            pointColor={{ theme: 'background' }}
-            pointBorderWidth={2}
-            pointBorderColor={{ from: 'serieColor' }}
-            pointLabelYOffset={-12}
-            useMesh={true}
-            legends={[
-                {
-                    anchor: 'right',
-                    direction: 'row',
-                    justify: false,
-                    translateX: 40,
-                    translateY: 300,
-                    itemsSpacing: 5,
-                    itemDirection: 'left-to-right',
-                    itemWidth: 79,
-                    itemHeight: 15,
-                    itemOpacity: 0.75,
-                    symbolSize: 17,
-                    symbolShape: 'circle',
-                    symbolBorderColor: 'rgba(0, 0, 0, .5)',
-                    effects: [
-                        {
-                            on: 'hover',
-                            style: {
-                                itemBackground: 'rgba(0, 0, 0, .03)',
-                                itemOpacity: 1
-                            }
+        <ResponsiveBar
+        data={graphProps.map((items)=>(
+            {
+                id:items.itemName,
+                value:items.totalSell,
+                foodNameColor:"hsl(106, 70%, 50%)"
+            }
+        ))}
+        keys={graphProps.map((items)=>(
+            [
+              items.itemName
+            ]
+        ))}
+        indexBy="id"
+        margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
+        padding={0.3}
+        maxValue={row1.map((items)=>(
+            items.totalSell+5
+        ))}
+        valueScale={{ type: 'linear' }}
+        indexScale={{ type: 'band', round: true }}
+        colors={{ scheme: 'nivo' }}
+        defs={[
+            {
+                id: 'dots',
+                type: 'patternDots',
+                background: 'inherit',
+                color: '#38bcb2',
+                size: 4,
+                padding: 1,
+                stagger: true
+            },
+            {
+                id: 'lines',
+                type: 'patternLines',
+                background: 'inherit',
+                color: '#eed312',
+                rotation: -45,
+                lineWidth: 6,
+                spacing: 10
+            }
+        ]}
+        fill={[
+            {
+                match: {
+                    id: 'chapo&beef'
+                },
+                id: 'dots'
+            },
+            {
+                match: {
+                    id: 'chipo'
+                },
+                id: 'lines'
+            }
+        ]}
+        borderColor={{
+            from: 'color',
+            modifiers: [
+                [
+                    'darker',
+                    1.6
+                ]
+            ]
+        }}
+        axisTop={null}
+        axisRight={null}
+        axisBottom={{
+            tickSize: 5,
+            tickPadding: 5,
+            tickRotation: 0,
+            legend: 'food',
+            legendPosition: 'middle',
+            legendOffset: 32
+        }}
+        axisLeft={{
+            tickSize: 5,
+            tickPadding: 5,
+            tickRotation: 0,
+            legend: 'number of times sold',
+            legendPosition: 'middle',
+            legendOffset: -40
+        }}
+        labelSkipWidth={12}
+        labelSkipHeight={12}
+        labelTextColor={{
+            from: 'color',
+            modifiers: [
+                [
+                    'darker',
+                    1.6
+                ]
+            ]
+        }}
+        legends={[
+            {
+                dataFrom: 'keys',
+                anchor: 'bottom-right',
+                direction: 'column',
+                justify: false,
+                translateX: 120,
+                translateY: 0,
+                itemsSpacing: 2,
+                itemWidth: 100,
+                itemHeight: 20,
+                itemDirection: 'left-to-right',
+                itemOpacity: 0.85,
+                symbolSize: 20,
+                effects: [
+                    {
+                        on: 'hover',
+                        style: {
+                            itemOpacity: 1
                         }
-                    ]
-                }
-            ]}
-            motionConfig={{
-                mass: 1,
-                tension: 170,
-                friction: 26,
-                clamp: false,
-                precision: 0.01,
-                velocity: 0
-            }}
-        />
+                    }
+                ]
+            }
+        ]}
+        role="application"
+        ariaLabel="Nivo bar chart demo"
+        barAriaLabel={e=>e.id+": "+e.formattedValue+" in country: "+e.indexValue}
+       />
         </Container>
      </>
     )
